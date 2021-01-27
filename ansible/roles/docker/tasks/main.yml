@@ -1,0 +1,35 @@
+---
+# tasks file for docker
+- name: Garantir a instalacao do docker
+  apt: name={{ item }} update_cache=yes state=present
+  with_items:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - gnupg-agent
+          - python3-docker
+  become: true
+- apt_key:
+   url: "https://download.docker.com/linux/ubuntu/gpg"
+   state: present
+  become: true
+- apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+  become: true
+- name: instalando o Docker
+  apt: name=docker-ce update_cache=yes state=present
+  become: true
+- name: Add remote "ubuntu" user to "docker" group
+  user: 
+    name: "ubuntu"
+    group: "docker"
+    append: yes
+  tags:
+    - docker
+  become: true
+- name: Install docker-compose
+  shell: curl -L "https://github.com/docker/compose/releases/download/1.28.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose && ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+  ignore_errors: yes
+  become: true

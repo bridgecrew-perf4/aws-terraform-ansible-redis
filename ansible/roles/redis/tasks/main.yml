@@ -1,0 +1,11 @@
+---
+# tasks file for redis
+
+- name: Run redis container
+  docker_container:
+    name: myredis
+    image: redis
+    command: redis-server --appendonly yes
+    state: started
+    exposed_ports:
+      - 6379

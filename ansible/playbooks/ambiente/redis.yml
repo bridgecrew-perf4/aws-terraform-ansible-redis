@@ -1,0 +1,4 @@
+- name: executando as roles na maquina desafio
+  hosts: desafio
+  roles:
+   - redis
